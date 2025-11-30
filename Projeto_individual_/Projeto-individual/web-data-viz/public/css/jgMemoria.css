@@ -1,0 +1,91 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Poppins, sans-serif;
+    background: url("imagens_videos_Site/castelo_infinito.jpeg") no-repeat center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.game-container {
+    text-align: center;
+    color: white;
+    text-shadow: 0 0 10px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-container h1 {
+    font-size: 42px;
+    margin-bottom: 15px;
+    color: #fff;
+    text-shadow: 0 0 8px #000;
+    font-weight: 700;
+}
+
+#stats {
+    font-size: 22px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: rgb(255, 240, 240);
+    text-shadow: 0 0 8px #000;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 110px);
+    grid-template-rows: repeat(6, 110px);
+    gap: 10px;
+    justify-content: center;
+}
+
+.card {
+    width: 110px;
+    height: 110px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.45s ease, box-shadow 0.3s;
+    cursor: pointer;
+    border-radius: 12px;
+    border: 3px solid #d4af37;
+    background: linear-gradient(145deg, #1a1a1a, #000000);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.card:hover {
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.7);
+}
+
+.card.flip {
+    transform: rotateY(180deg);
+}
+
+.front,
+.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    border: 3px solid #ffffff55;
+}
+
+.front {
+    transform: rotateY(180deg);
+    background-size: cover;
+    background-position: center;
+}
+
+.back {
+    background: url("imagens_videos_Site/fundoCard.png") no-repeat center/85%;
+    background-color: #111;
+}
+
+.card.matched {
+    transform: rotateY(180deg) !important;
+    cursor: default;
+}
