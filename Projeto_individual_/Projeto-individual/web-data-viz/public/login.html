@@ -58,7 +58,7 @@
                         sessionStorage.ID_USUARIO = usuario.idUsuario || usuario.id || usuario.idusuario;
                         sessionStorage.NOME_USUARIO = usuario.nome;
                         sessionStorage.EMAIL_USUARIO = usuario.email;
-                        window.location.href = "area-usuario.html";
+                        window.location.href = "./dashboard/area-usuario.html";
                     } else {
                         const texto = await res.text().catch(() => null);
                         card.style.display = 'block';
