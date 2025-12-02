@@ -1,5 +1,5 @@
 // Definição do ambiente
-var ambiente_processo = 'desenvolvimento';
+var ambiente_processo = 'desenvolvimento'; 
 // var ambiente_processo = 'producao';
 
 var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
@@ -14,24 +14,20 @@ var HOST_APP = process.env.APP_HOST;
 
 var app = express();
 
-// ROTAS
-var indexRouter = require("./src/routes/index");
-var usuarioRouter = require("./src/routes/usuarios");
-var partidaRouter = require("./src/routes/partidas");
-
 // MIDDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-
-// pasta public (onde ficam meus HTMLs)
 app.use(express.static(path.join(__dirname, "public")));
 
-// ROTAS PRINCIPAIS
-app.use("/", indexRouter);
+
+var indexRouter = require("./src/routes/index");
+var usuarioRouter = require("./src/routes/usuarios");
+var partidaRouter = require("./src/routes/partidas");
+
 app.use("/usuarios", usuarioRouter);
 app.use("/partidas", partidaRouter);
-
+app.use("/", indexRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
