@@ -47,7 +47,7 @@
     }
 
     function obterPartidas() {
-        fetch(`/partidas/listar/${ID}`)
+        fetch(`/partidas/listar/${ID_USUARIO}`)
             .then(res => res.json())
             .then(dados => {
                 montarGraficoJogadas(dados);
