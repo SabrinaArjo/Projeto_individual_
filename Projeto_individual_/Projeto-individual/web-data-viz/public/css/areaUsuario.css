@@ -1,0 +1,131 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    background: url("../css/imagens_videos_Sitee/castelo_infinito.jpeg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+.janela {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    backdrop-filter: blur(1px);
+}
+
+.menu {
+    width: 280px;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-right: 3px solid crimson;
+    box-shadow: 0 0 15px black inset;
+}
+
+.titulo-menu {
+    color: crimson;
+    text-align: center;
+    text-shadow: 0 0 12px red;
+}
+
+.hello h3 {
+    color: white;
+    margin-bottom: 25px;
+}
+
+.btn-nav,
+.btn-nav-white {
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    display: block;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-nav {
+    background: crimson;
+    box-shadow: 0 0 10px crimson;
+}
+
+.btn-nav:hover {
+    transform: translateX(5px);
+    box-shadow: 0 0 15px red;
+}
+
+.btn-nav-white {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-nav-white:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.btn-logout {
+    margin-top: auto;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgb(150, 0, 0);
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: red;
+    box-shadow: 0 0 15px red;
+}
+
+.conteudo {
+    flex: 1;
+    padding: 40px;
+    color: white;
+}
+
+.texto-intro {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.cards-container {
+    display: flex;
+    gap: 25px;
+}
+
+.card-opcao {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 25px;
+    border-radius: 12px;
+    width: 260px;
+    box-shadow: 0 0 10px black;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card-opcao:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px crimson;
+}
+
+.btn-acessar {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px;
+    background: crimson;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-acessar:hover {
+    background: red;
+    box-shadow: 0 0 10px red;
+}

@@ -26,7 +26,6 @@ CREATE TABLE usuario_personagem (
 CREATE TABLE partida (
   idPartida INT PRIMARY KEY AUTO_INCREMENT,
   fkUsuario INT,
-  acertos INT,
   jogadas INT,
   tempo INT,
   dataPartida DATETIME DEFAULT CURRENT_TIMESTAMP,

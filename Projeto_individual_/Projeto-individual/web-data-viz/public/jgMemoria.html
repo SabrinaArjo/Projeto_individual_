@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,93 +16,142 @@
             Jogadas: <span id="moves">0</span> &nbsp;|&nbsp;
             Tempo: <span id="timer">0</span>s
         </div>
-
         <div class="grid" id="grid"></div>
     </div>
+    <div id="resultadoModal" class="modal">
+        <div class="modal-content">
+            <h2>Parabéns!</h2>
+            <p id="resultadoTexto"></p>
+
+            <button onclick="jogarNovamente()">Jogar Novamente</button>
+            <button onclick="irParaDashboard()" class="btn-dash">Ver Dashboards</button>
+        </div>
+    </div>
+
 </body>
+
 </html>
+
 </html>
 
 <script>
     const personagens = [
-    "css/imagens_videos_Site/tanjiro_kamado_card.jpeg",
-    "css/imagens_videos_Site/nezuko.jpeg",
-    "css/imagens_videos_Site/tela de bloqueio.jpeg",
-    "css/imagens_videos_Site/Inosuke Hashibira.jpeg",
-    "css/imagens_videos_Site/renkoguLindo.jpeg",
-    "css/imagens_videos_Site/Giyu Tomioka 冨岡 義勇（とみおか ぎゆう）, 富冈义勇, Tomioka Giyū.jpg",
-    "css/imagens_videos_Site/uzuigostosotesudo.jpeg",
-    "css/imagens_videos_Site/Akaza.jpg",
-    "css/imagens_videos_Site/muzan.jpg"
-];
+        "../public/css/imagens_videos_Sitee/Tanjiro Kamado - Demon Slayer.jpeg",
+        "../public/css/imagens_videos_Sitee/nezuko.jpeg",
+        "../public/css/imagens_videos_Sitee/tela de bloqueio.jpeg",
+        "../public/css/imagens_videos_Sitee/Inosuke Hashibira.jpeg",
+        "../public/css/imagens_videos_Sitee/renkoguLindo.jpeg",
+        "../public/css/imagens_videos_Sitee/Giyu Tomioka 冨岡 義勇（とみおか ぎゆう）, 富冈义勇, Tomioka Giyū.jpg",
+        "../public/css/imagens_videos_Sitee/uzuigostosotesudo.jpeg",
+        "../public/css/imagens_videos_Sitee/Akaza.jpg",
+        "../public/css/imagens_videos_Sitee/muzan.jpg"
+    ];
 
-let deck = [...personagens, ...personagens];
-deck.sort(() => Math.random() - 0.5);
+    let deck = [...personagens, ...personagens];
+    deck.sort(() => Math.random() - 0.5);
 
-const grid = document.getElementById("grid");
-let firstCard = null;
-let lock = false;
-let moves = 0;
-let timer = 0;
-let interval = null;
+    const grid = document.getElementById("grid");
+    let firstCard = null;
+    let lock = false;
+    let moves = 0;
+    let timer = 0;
+    let interval = null;
+    let matchedCount = 0;
 
-document.getElementById("moves").innerText = moves;
-
-function startTimer() {
-    interval = setInterval(() => {
-        timer++;
-        document.getElementById("timer").innerText = timer;
-    }, 1000);
-}
-
-deck.forEach((imgPath) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.dataset.img = imgPath;
-
-    card.innerHTML = `
-        <div class="front" style="background-image: url('${imgPath}')"></div>
-        <div class="back"></div>
-    `;
-
-    card.addEventListener("click", () => flip(card));
-    grid.appendChild(card);
-});
-
-function flip(card) {
-    if (lock || card === firstCard || card.classList.contains("matched")) return;
-
-    if (moves === 0 && timer === 0) startTimer();
-
-    card.classList.add("flip");
-
-    if (!firstCard) {
-        firstCard = card;
-        return;
-    }
-
-    moves++;
     document.getElementById("moves").innerText = moves;
 
-    if (card.dataset.img === firstCard.dataset.img) {
-        card.classList.add("matched");
-        firstCard.classList.add("matched");
-
-        firstCard = null;
-        if (document.querySelectorAll(".matched").length === deck.length) {
-            setTimeout(() => {
-                alert(`Parabéns! Você finalizou o jogo em ${moves} jogadas e ${timer}s!`);
-            }, 500);
-        }
-        return;
+    function startTimer() {
+        interval = setInterval(() => {
+            timer++;
+            document.getElementById("timer").innerText = timer;
+        }, 1000);
     }
 
-    lock = true;
-    setTimeout(() => {
-        card.classList.remove("flip");
-        firstCard.classList.remove("flip");
-        firstCard = null;
-        lock = false;
-    }, 900);
-}
+    deck.forEach((imgPath) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.img = imgPath;
+
+        card.innerHTML = `
+            <div class="front" style="background-image: url('${imgPath}')"></div>
+            <div class="back"></div>
+        `;
+
+        card.addEventListener("click", () => flip(card));
+        grid.appendChild(card);
+    });
+
+    function flip(card) {
+        if (lock || card === firstCard || card.classList.contains("matched")) return;
+
+        if (moves === 0 && timer === 0) startTimer();
+
+        card.classList.add("flip");
+
+        if (!firstCard) {
+            firstCard = card;
+            return;
+        }
+
+        moves++;
+        document.getElementById("moves").innerText = moves;
+
+        if (card.dataset.img === firstCard.dataset.img) {
+            card.classList.add("matched");
+            firstCard.classList.add("matched");
+
+            matchedCount++;
+
+            firstCard = null;
+
+            if (matchedCount === personagens.length) {
+                fimDeJogo();
+            }
+
+            return;
+        }
+
+        lock = true;
+        setTimeout(() => {
+            card.classList.remove("flip");
+            firstCard.classList.remove("flip");
+            firstCard = null;
+            lock = false;
+        }, 900);
+    }
+
+    function salvarPartida(acertos, jogadas, tempo) {
+        fetch("/partidas/registrar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                idUsuario: sessionStorage.ID_USUARIO,
+                acertos,
+                jogadas,
+                tempo
+            })
+        });
+    }
+
+    function fimDeJogo() {
+        clearInterval(interval);
+        const acertos = personagens.length;
+        const jogadas = moves;
+        const tempoFinal = timer;
+
+        salvarPartida(acertos, jogadas, tempoFinal);
+
+        document.getElementById("resultadoTexto").innerHTML =
+            `Você encontrou <b>${acertos}</b> pares em <b>${jogadas}</b> jogadas e <b>${tempoFinal}s</b>!`;
+
+        document.getElementById("resultadoModal").style.display = "flex";
+    }
+
+    function jogarNovamente() {
+        window.location.reload();
+    }
+
+    function irParaDashboard() {
+        window.location.href = "../public/dashboard/dashboard.html";
+    }
 </script>

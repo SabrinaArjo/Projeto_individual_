@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Poppins, sans-serif;
-    background: url("imagens_videos_Site/castelo_infinito.jpeg") no-repeat center/cover;
+    background: url("../css/imagens_videos_Sitee/castelo_infinito.jpeg") no-repeat center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -81,11 +81,100 @@ body {
 }
 
 .back {
-    background: url("imagens_videos_Site/fundoCard.png") no-repeat center/85%;
+    background: url("../css/imagens_videos_Sitee/fundoCard.png") no-repeat center/85%;
     background-color: #111;
 }
 
 .card.matched {
     transform: rotateY(180deg) !important;
     cursor: default;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(8, 8, 8, 0.85); /* fundo escuro dramático */
+    display: none; /* fica invisível até o fim do jogo */
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.4s ease-in-out;
+    z-index: 999;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: #1b1b1b;
+    border: 3px solid #b30000; /* vermelho demon slayer */
+    padding: 30px;
+    width: 350px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 25px #b30000aa;
+    animation: scaleUp 0.3s ease;
+    color: #fff;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+    color: #ff4444;
+    font-size: 26px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+.modal-content p {
+    font-size: 18px;
+    margin: 10px 0 20px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.btn-restart,
+.btn-dash {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.25s ease;
+}
+
+.btn-restart {
+    background: #ff6388;
+    color: white;
+    box-shadow: 0 0 10px #ff6388aa;
+}
+
+.btn-restart:hover {
+    background: #ff2d65;
+    box-shadow: 0 0 18px #ff2d65;
+}
+
+.btn-dash {
+    background: #cc0000;
+    color: white;
+    box-shadow: 0 0 10px #cc0000aa;
+}
+
+.btn-dash:hover {
+    background: #ff0000;
+    box-shadow: 0 0 18px #ff0000;
 }

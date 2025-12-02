@@ -92,3 +92,45 @@ input {
     font-weight: bold;
     margin-top: 5px;
 }
+
+#cardErro {
+    width: 100%;
+    max-width: 330px;
+    padding: 12px;
+    margin-top: 10px;
+
+    background: rgba(0, 0, 0, 0.75);
+    border-left: 4px solid crimson;
+    color: #ff4a4a;
+    font-weight: bold;
+    text-align: center;
+
+    border-radius: 10px;
+    display: none;
+
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
+    animation: fadeInError 0.4s ease forwards;
+}
+
+@keyframes fadeInError {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#cardErro .fecharErro {
+    float: right;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 8px;
+    color: #ff4a4a;
+}
+
+#cardErro .fecharErro:hover {
+    color: white;
+}

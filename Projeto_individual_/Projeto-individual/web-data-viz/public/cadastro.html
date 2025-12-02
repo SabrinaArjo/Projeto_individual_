@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Cadastro | Castelo Infinito</title>
     <link rel="stylesheet" href="css/cadastro.css">
 </head>
 
-<body style="background: url('css/imagens_videos_Site/castelo_infinito.jpeg') no-repeat center center fixed;
-             background-size: cover;">
+<body
+    style="background: url('css/imagens_videos_Site/castelo_infinito.jpeg') no-repeat center center fixed; background-size: cover;">
     <div class="cadastro-container">
-
         <h1 class="cadastro-title">Crie sua conta</h1>
-
         <div class="cadastro-box">
-
             <label>Nome</label>
             <input id="ipt_nome" type="text" placeholder="Seu nome completo">
 
@@ -35,60 +33,56 @@
             </p>
 
             <p id="mensagem" class="mensagem"></p>
-
         </div>
     </div>
-</body>
-</html>
 
-<script>
-    function cadastrar() {
-    var nome = document.getElementById("ipt_nome").value.trim();
-    var email = document.getElementById("ipt_email").value.trim();
-    var senha = document.getElementById("ipt_senha").value;
-    var confirmar = document.getElementById("ipt_confirmar").value;
+    <script>
+        function cadastrar() {
+            var nome = document.getElementById("ipt_nome").value.trim();
+            var email = document.getElementById("ipt_email").value.trim();
+            var senha = document.getElementById("ipt_senha").value;
+            var confirmar = document.getElementById("ipt_confirmar").value;
+            var msg = document.getElementById("mensagem");
 
-    var msg = document.getElementById("mensagem");
+            if (nome === "" || email === "" || senha === "" || confirmar === "") {
+                msg.innerHTML = "Preencha todos os campos!";
+                msg.style.color = "red";
+                return;
+            }
 
-    if (nome === "" || email === "" || senha === "" || confirmar === "") {
-        msg.innerHTML = "Preencha todos os campos!";
-        msg.style.color = "red";
-        return;
-    }
+            if (senha !== confirmar) {
+                msg.innerHTML = "As senhas não coincidem!";
+                msg.style.color = "red";
+                return;
+            }
 
-    if (senha !== confirmar) {
-        msg.innerHTML = "As senhas não coincidem!";
-        msg.style.color = "red";
-        return;
-    }
-
-    fetch("/usuarios/cadastrar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-        nome: nome,
-        email: email,
-        senha: senha
-})
-
-    })
-    .then(res => {
-        if (res.ok) {
-            msg.innerHTML = "Cadastro realizado com sucesso!";
-            msg.style.color = "lightgreen";
-
-            setTimeout(() => {
-                window.location.href = "login.html";
-            }, 1500);
-        } else {
-            msg.innerHTML = "Erro ao cadastrar. Email já existe!";
-            msg.style.color = "red";
+            fetch("/usuarios/cadastrar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    senha: senha
+                })
+            })
+                .then(async res => {
+                    if (res.ok) {
+                        msg.innerHTML = "Cadastro realizado com sucesso!";
+                        msg.style.color = "lightgreen";
+                        setTimeout(() => window.location.href = "login.html", 1200);
+                    } else {
+                        const text = await res.text().catch(() => null);
+                        msg.innerHTML = text || "Erro ao cadastrar. Email já existe?";
+                        msg.style.color = "red";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    msg.innerHTML = "Erro inesperado.";
+                    msg.style.color = "red";
+                });
         }
-    })
-    .catch(err => {
-        console.error(err);
-        msg.innerHTML = "Erro inesperado.";
-        msg.style.color = "red";
-    });
-}
-</script>
+    </script>
+</body>
+
+</html>

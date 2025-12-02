@@ -1,52 +1,58 @@
 body {
     margin: 0;
-    padding: 0;
-    background: url("imagens_videos_Site/castelo_infinito.jpeg") no-repeat center/cover;
-    font-family: "Poppins", sans-serif;
-    color: #fff;
-    backdrop-filter: blur(2px);
+    font-family: "Exo 2", sans-serif;
+    background: #0d0d0d;
+    color: #e1e1e1;
+}
+
+header {
+    background: linear-gradient(90deg, #1b1b1b, #111);
+    color: #29ffaf;
+    padding: 20px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    border-bottom: 4px solid #29ffaf;
+    text-shadow: 0px 0px 8px #29ffaf;
 }
 
 .container {
-    width: 80%;
-    margin: auto;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 40px;
-    margin-top: 20px;
-    text-shadow: 0 0 15px black;
-}
-
-.cards-info {
-    margin-top: 30px;
     display: flex;
-    justify-content: center;
-    gap: 40px;
-}
-
-.card-info {
-    background: rgba(0,0,0,0.6);
+    flex-direction: column;
+    gap: 30px;
     padding: 20px;
-    width: 200px;
+}
+
+.card {
+    background: #131313;
+    padding: 20px;
     border-radius: 12px;
-    border: 2px solid #d4af37;
-    box-shadow: 0 0 20px #000;
+    border: 2px solid #29ffaf99;
+    box-shadow: 0 0 10px #29ffaf55;
 }
 
-.card-info h3 {
-    color: #d4af37;
-}
-
-.graficos {
-    margin-top: 40px;
+.card h2 {
+    margin: 0 0 10px 0;
+    text-shadow: 0px 0px 8px #29ffaf;
 }
 
 canvas {
-    margin-top: 30px;
-    background: rgba(0,0,0,0.7);
-    padding: 15px;
-    border-radius: 12px;
-    border: 2px solid #d4af37;
+    width: 100%;
+    max-height: 300px;
+}
+
+button {
+    background: #29ffaf;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #000;
+    font-weight: bold;
+    margin-bottom: 12px;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
 }

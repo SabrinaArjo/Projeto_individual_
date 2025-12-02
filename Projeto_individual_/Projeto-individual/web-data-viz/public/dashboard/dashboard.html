@@ -7,45 +7,34 @@
 
     <link rel="stylesheet" href="../css/dashboard.css">
 
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Sessão -->
-    <script src="../js/sessao.js"></script>
 </head>
 
 <body onload="carregarDashboard()">
 
+    <header>
+    Dashboard Demon Slayer – Estatísticas do Jogo da Memória!
+    </header>
+
     <div class="container">
 
-        <header>
-            <h1>Castelo Infinito — Dashboard</h1>
-            <h2>Olá, <span id="b_usuario"></span>!</h2>
-        </header>
-
-        <section class="cards-info">
-            <div class="card-info">
-                <h3>Total de Partidas</h3>
-                <p id="totalPartidas">0</p>
-            </div>
-
-            <div class="card-info">
-                <h3>Média de Jogadas</h3>
-                <p id="mediaJogadas">0</p>
-            </div>
-
-            <div class="card-info">
-                <h3>Melhor Tempo</h3>
-                <p id="melhorTempo">0s</p>
-            </div>
-        </section>
-
-        <section class="graficos">
+        <div class="card">
+            <h2>Jogadas por partida</h2>
             <canvas id="graficoJogadas"></canvas>
+        </div>
+
+        <div class="card">
+            <h2>Tempo de conclusão</h2>
             <canvas id="graficoTempo"></canvas>
+        </div>
+
+        <div class="card">
+            <h2>Você x Média dos Jogadores</h2>
             <canvas id="graficoComparativo"></canvas>
-        </section>
+        </div>
+
     </div>
+
 </body>
 
 </html>
@@ -53,100 +42,110 @@
 <script>
 
     function carregarDashboard() {
+        obterPartidas();
+        obterResumo();
+    }
 
-        const idUsuario = sessionStorage.ID_USUARIO;
-
-        fetch(`/partidas/dashboard/${idUsuario}`)
+    function obterPartidas() {
+        fetch(`/partidas/listar/${ID}`)
             .then(res => res.json())
             .then(dados => {
-                document.getElementById("totalPartidas").innerText = dados[0].total_partidas;
-                document.getElementById("mediaJogadas").innerText = Number(dados[0].media_jogadas).toFixed(1);
-                document.getElementById("melhorTempo").innerText = dados[0].melhor_tempo + "s";
-
-                carregarGraficos(idUsuario);
-            });
+                montarGraficoJogadas(dados);
+                montarGraficoTempo(dados);
+            })
+            .catch(err => console.log("Erro ao buscar partidas:", err));
     }
-
-    function carregarGraficos(idUsuario) {
-        fetch(`/partidas/listar/${idUsuario}`)
+    
+    function obterResumo() {
+        fetch(`/partidas/dashboard/${ID}`)
             .then(res => res.json())
-            .then(lista => {
-                let labels = lista.map(l => l.dataHora);
-                let jogadas = lista.map(l => l.jogadas);
-                let tempo = lista.map(l => l.tempo);
-
-                graficoJogadas(labels, jogadas);
-                graficoTempo(labels, tempo);
-
-                carregarComparativo(idUsuario);
+            .then(dados => {
+                montarGraficoComparativo(dados[0]);
             });
     }
 
-    function graficoJogadas(labels, jogadas) {
-        new Chart(document.getElementById("graficoJogadas"), {
-            type: "line",
-            data: {
-                labels,
-                datasets: [{
-                    label: "Jogadas por partida",
-                    data: jogadas,
-                    borderWidth: 3,
-                    borderColor: "#d4af37",
-                    backgroundColor: "rgba(212,175,55,0.3)"
-                }]
-            }
-        });
-    }
+    function montarGraficoJogadas(partidas) {
+        const ctx = document.getElementById('graficoJogadas');
 
-    function graficoTempo(labels, tempo) {
-        new Chart(document.getElementById("graficoTempo"), {
+        new Chart(ctx, {
             type: "bar",
             data: {
-                labels,
+                labels: partidas.map(p => "Partida " + p.idPartida),
                 datasets: [{
-                    label: "Tempo por partida (s)",
-                    data: tempo,
-                    backgroundColor: "rgba(200,30,30,0.7)",
-                    borderColor: "#ff0000",
+                    label: "Jogadas",
+                    data: partidas.map(p => p.jogadas),
+                    backgroundColor: "#29ffaf88",
+                    borderColor: "#29ffaf",
                     borderWidth: 2
                 }]
+            },
+            options: {
+                plugins: { legend: { labels: { color: "#fff" } } },
+                scales: {
+                    x: { ticks: { color: "#fff" } },
+                    y: { ticks: { color: "#fff" } }
+                }
             }
         });
     }
 
-    function carregarComparativo(idUsuario) {
-        fetch(`/partidas/dashboard/${idUsuario}`)
-            .then(res => res.json())
-            .then(stats => {
+    function montarGraficoTempo(partidas) {
+        const ctx = document.getElementById('graficoTempo');
 
-                let user_acertos = stats[0].media_acertos;
-                let user_jogadas = stats[0].media_jogadas;
-
-                fetch("/partidas/media-geral")
-                    .then(res => res.json())
-                    .then(media => {
-
-                        new Chart(document.getElementById("graficoComparativo"), {
-                            type: "bar",
-                            data: {
-                                labels: ["Acertos", "Jogadas"],
-                                datasets: [
-                                    {
-                                        label: "Você",
-                                        data: [user_acertos, user_jogadas],
-                                        backgroundColor: "rgba(212,175,55,0.8)"
-                                    },
-                                    {
-                                        label: "Média Geral",
-                                        data: [media.media_acertos, media.media_jogadas],
-                                        backgroundColor: "rgba(150,150,150,0.5)"
-                                    }
-                                ]
-                            }
-                        });
-
-                    });
-            });
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: partidas.map(p => "Partida " + p.idPartida),
+                datasets: [{
+                    label: "Segundos",
+                    data: partidas.map(p => p.tempo),
+                    borderColor: "#ff5050",
+                    backgroundColor: "#ff505055",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { legend: { labels: { color: "#fff" } } },
+                scales: {
+                    x: { ticks: { color: "#fff" } },
+                    y: { ticks: { color: "#fff" } }
+                }
+            }
+        });
     }
 
+    function montarGraficoComparativo(r) {
+        const ctx = document.getElementById('graficoComparativo');
+
+        const dados = {
+            labels: ["Acertos", "Jogadas", "Melhor Tempo (quanto menor melhor)"],
+            datasets: [
+                {
+                    label: "Você",
+                    data: [r.media_acertos, r.media_jogadas, r.melhor_tempo],
+                    backgroundColor: "#29ffaf",
+                },
+                {
+                    label: "Média dos Jogadores",
+                    data: [8, 22, 30],
+                    backgroundColor: "#ff5050"
+                }
+            ]
+        };
+
+        new Chart(ctx, {
+            type: "radar",
+            data: dados,
+            options: {
+                scales: {
+                    r: {
+                        grid: { color: "#666" },
+                        angleLines: { color: "#666" },
+                        pointLabels: { color: "#fff" }
+                    }
+                },
+                plugins: { legend: { labels: { color: "#fff" } } }
+            }
+        });
+    }
 </script>
