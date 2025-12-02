@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard | Demon Slayer Memory</title>
+    <title>Dashboard | Demon Slayer</title>
 
     <link rel="stylesheet" href="../css/dashboard.css">
 
@@ -47,7 +47,11 @@
     }
 
     function obterPartidas() {
-        fetch(`/partidas/listar/${ID_USUARIO}`)
+        fetch('/partida/listar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({id_usuario:sessionStorage.ID_USUARIO})
+            })
             .then(res => res.json())
             .then(dados => {
                 montarGraficoJogadas(dados);
@@ -57,7 +61,11 @@
     }
     
     function obterResumo() {
-        fetch(`/partidas/dashboard/${ID}`)
+        fetch('/partida/dashboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({id_usuario: sessionStorage.ID_USUARIO})
+            })
             .then(res => res.json())
             .then(dados => {
                 montarGraficoComparativo(dados[0]);
