@@ -47,7 +47,7 @@
     }
 
     function obterPartidas() {
-        fetch('/partida/listar', {
+        fetch(`/partidas/listar/${sessionStorage.ID_USUARIO}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({id_usuario:sessionStorage.ID_USUARIO})
@@ -61,10 +61,9 @@
     }
     
     function obterResumo() {
-        fetch('/partida/dashboard', {
+        fetch(`/partidas/dashboard/ ${sessionStorage.ID_USUARIO}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({id_usuario: sessionStorage.ID_USUARIO})
             })
             .then(res => res.json())
             .then(dados => {

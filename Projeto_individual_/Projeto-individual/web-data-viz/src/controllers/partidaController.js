@@ -11,10 +11,12 @@ function registrar(req, res) {
         return;
     }
 
-    partidaModel.registrar(idUsuario, acertos, jogadas, tempo)
-        .then(resultado => res.json(resultado))
-        .catch(erro => {
-            console.log(erro);
+    partidaModel.registrarResultado(idUsuario, acertos, jogadas, tempo)
+        .then(function (resultado) {
+            res.status(201).json({ message: "Resultado registrado", resultado: resultado });
+        })
+        .catch(function (erro) {
+            console.log("Erro ao registrar partida:", erro);
             res.status(500).json(erro);
         });
 }
@@ -23,9 +25,11 @@ function listarPorUsuario(req, res) {
     var idUsuario = req.params.idUsuario;
 
     partidaModel.listarPorUsuario(idUsuario)
-        .then(resultado => res.json(resultado))
-        .catch(erro => {
-            console.log(erro);
+        .then(function (resultado) {
+            res.json(resultado);
+        })
+        .catch(function (erro) {
+            console.log("Erro ao listar partidas:", erro);
             res.status(500).json(erro);
         });
 }
@@ -34,8 +38,10 @@ function dashboard(req, res) {
     var idUsuario = req.params.idUsuario;
 
     partidaModel.dashboard(idUsuario)
-        .then(resultado => res.json(resultado))
-        .catch(erro => {
+        .then(function (resultado) {
+            res.json(resultado);
+        })
+        .catch(function (erro) {
             console.log("Erro no dashboard:", erro);
             res.status(500).json(erro);
         });

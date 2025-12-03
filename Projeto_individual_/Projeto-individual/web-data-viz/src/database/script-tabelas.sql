@@ -1,5 +1,4 @@
 CREATE DATABASE Projeto_Individual;
-
 USE Projeto_Individual;
 
 CREATE TABLE usuario (
@@ -9,89 +8,49 @@ CREATE TABLE usuario (
   senha VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE personagem (
-  idPersonagem INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(80) NOT NULL,
-  imagem VARCHAR(255)
-);
-
-CREATE TABLE usuario_personagem (
-  fkUsuario INT,
-  fkPersonagem INT,
-  PRIMARY KEY (fkUsuario, fkPersonagem),
-  FOREIGN KEY (fkUsuario) REFERENCES usuario(idUsuario),
-  FOREIGN KEY (fkPersonagem) REFERENCES personagem(idPersonagem)
-);
-
 CREATE TABLE partida (
   idPartida INT PRIMARY KEY AUTO_INCREMENT,
-  fkUsuario INT,
-  jogadas INT,
-  tempo INT,
-  dataPartida DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (fkUsuario) REFERENCES usuario(idUsuario)
+  tempo INT NOT NULL,
+  dataPartida DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO usuario (nome, email, senha) values
-('leandro', 'leandro@gmail.com', 'sabrinalinda123');
+CREATE TABLE resultado (
+  fkUsuario INT,
+  fkPartida INT,
+  acertos INT NOT NULL,
+  jogadas INT NOT NULL,
 
-INSERT INTO personagem (nome, imagem) VALUES
-('Tanjiro Kamado', 'tanjiro_kamado_card.jpeg'),
-('Nezuko Kamado', 'nezuko.jpeg'),
-('Zenitsu Agatsuma', 'ZENITSU.jpeg'),
-('Inosuke Hashibira', 'Inosuke.jpeg'),
-('Rengoku Kyojuro', 'rengoku.jpeg'),
-('Shinobu Kocho', 'tomioka.jpg');
+  PRIMARY KEY (fkUsuario, fkPartida),
 
-INSERT INTO partida (fkUsuario, acertos, erros) VALUES
-(1, 20, 16),
-(1, 25, 11),
-(2, 18, 18),
-(3, 30, 6),
-(3, 27, 9);
+  FOREIGN KEY (fkUsuario) REFERENCES usuario(idUsuario),
+  FOREIGN KEY (fkPartida) REFERENCES partida(idPartida)
+);
 
-SELECT 
-    u.idUsuario,
-    u.nome AS jogador,
-    
-    COUNT(p.idPartida) AS total_partidas,
+INSERT INTO usuario (nome, email, senha) VALUES
+('Sabrina', 'sabrina@gmail.com', 'senha123'),
+('Leandro', 'leandro@gmail.com', 'sabrinalinda123');
 
-    SUM(p.acertos) AS total_acertos,
-    SUM(p.erros) AS total_erros,
+INSERT INTO partida (tempo) VALUES
+(45), (60), (38), (79);
 
-    CONCAT(
-        ROUND((SUM(p.acertos) / (SUM(p.acertos) + SUM(p.erros))) * 100, 1),
-        '%'
-    ) AS aproveitamento_geral,
+INSERT INTO resultado (fkUsuario, fkPartida, acertos, jogadas) VALUES
+(1, 1, 18, 26),
+(1, 2, 20, 30),
+(2, 3, 22, 24),
+(2, 4, 25, 33);
 
-    CASE
-        WHEN (SUM(p.acertos) / (SUM(p.acertos) + SUM(p.erros))) >= 0.8
-            THEN 'Excelente'
-        WHEN (SUM(p.acertos) / (SUM(p.acertos) + SUM(p.erros))) >= 0.5
-            THEN 'Bom'
-        ELSE
-            'Precisa melhorar'
-    END AS classificacao,
-
-    CONCAT('Jogador ', u.nome, ' jogou ', COUNT(p.idPartida), ' partidas.') AS mensagem
-FROM usuario u
-JOIN partida p ON p.fkUsuario = u.idUsuario
-GROUP BY u.idUsuario;
-
-CREATE VIEW vw_estatisticas_usuarios AS
+CREATE VIEW vw_estatisticas_usuario AS
 SELECT 
     u.idUsuario,
     u.nome,
-    COUNT(p.idPartida) AS partidas,
-    SUM(p.acertos) AS acertos_totais,
-    SUM(p.erros) AS erros_totais,
-    ROUND((SUM(p.acertos) / (SUM(p.acertos) + SUM(p.erros))) * 100, 1) AS aproveitamento,
     
-    IF(
-        (SUM(p.acertos) / (SUM(p.acertos) + SUM(p.erros))) >= 0.7,
-        'Acima da média',
-        'Abaixo da média'
-    ) AS desempenho
+    COUNT(r.fkPartida) AS total_partidas,
+    SUM(r.acertos) AS acertos_totais,
+    SUM(r.jogadas) AS jogadas_totais,
+    ROUND(AVG(p.tempo), 1) AS tempo_medio,
+    
+    ROUND((SUM(r.acertos) / SUM(r.jogadas)) * 100, 1) AS taxa_acerto
 FROM usuario u
-JOIN partida p ON p.fkUsuario = u.idUsuario
+JOIN resultado r ON r.fkUsuario = u.idUsuario
+JOIN partida p ON p.idPartida = r.fkPartida
 GROUP BY u.idUsuario;

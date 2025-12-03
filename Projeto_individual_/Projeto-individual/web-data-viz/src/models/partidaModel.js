@@ -1,21 +1,35 @@
 var database = require("../database/config");
 
-function registrar(idUsuario, acertos, jogadas, tempo) {
-    var instrucaoSql = `
-        INSERT INTO partida (fkUsuario, acertos, jogadas, tempo)
-        VALUES (${idUsuario}, ${acertos}, ${jogadas}, ${tempo});
+function registrarResultado(idUsuario, acertos, jogadas, tempo) {
+    var instrucaoInserirPartida = `
+        INSERT INTO partida (descricao) VALUES ('Jogo da Memória');
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoInserirPartida)
+    .then(function(resultadoInsertPartida) {
+        var idPartida = resultadoInsertPartida.insertId || (resultadoInsertPartida && resultadoInsertPartida[0] && resultadoInsertPartida[0].insertId) || null;
+
+        var instrucaoUsuarioPartida = `
+            INSERT INTO resultado (fkUsuario, fkPartida, acertos, jogadas, tempo)
+            VALUES (${idUsuario}, ${idPartida}, ${acertos}, ${jogadas}, ${tempo});
+        `;
+        return database.executar(instrucaoUsuarioPartida);
+    });
 }
 
 function listarPorUsuario(idUsuario) {
     var instrucaoSql = `
         SELECT 
-            idPartida, acertos, jogadas, tempo,
-            DATE_FORMAT(dataHora, '%d/%m/%Y %H:%i') AS dataHora
-        FROM partida
-        WHERE fkUsuario = ${idUsuario}
-        ORDER BY dataHora DESC;
+            r.idUsuarioPartida,
+            p.idPartida,
+            p.dtHora AS data_partida,
+            r.acertos,
+            r.jogadas,
+            r.tempo
+        FROM resultado r
+        JOIN partida p ON p.idPartida = r.fkPartida
+        WHERE r.fkUsuario = ${idUsuario}
+        ORDER BY r.dataRegistro DESC;
     `;
     return database.executar(instrucaoSql);
 }
@@ -23,18 +37,20 @@ function listarPorUsuario(idUsuario) {
 function dashboard(idUsuario) {
     var instrucaoSql = `
         SELECT 
-            COUNT(*) AS total_partidas,
-            AVG(acertos) AS media_acertos,
-            AVG(jogadas) AS media_jogadas,
-            MIN(tempo) AS melhor_tempo
-        FROM partida
-        WHERE fkUsuario = ${idUsuario};
+            COUNT(r.fkPartida) AS total_partidas,
+            COALESCE(SUM(r.acertos),0) AS total_acertos,
+            COALESCE(SUM(r.jogadas),0) AS total_jogadas,
+            ROUND( (COALESCE(SUM(r.acertos),0) / NULLIF(COALESCE(SUM(r.jogadas),0),0)) * 100, 1) AS aproveitamento_percent,
+            MIN(r.tempo) AS melhor_tempo,
+            AVG(r.tempo) AS tempo_medio
+        FROM resultado r
+        WHERE r.fkUsuario = ${idUsuario};
     `;
     return database.executar(instrucaoSql);
 }
 
 module.exports = {
-    registrar,
+    registrarResultado,
     listarPorUsuario,
     dashboard
 };
