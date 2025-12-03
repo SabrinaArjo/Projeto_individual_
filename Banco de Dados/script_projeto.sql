@@ -3,9 +3,9 @@ USE Projeto_Individual;
 
 CREATE TABLE usuario (
   idUsuario INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45) NOT NULL,
-  email VARCHAR(45) NOT NULL UNIQUE,
-  senha VARCHAR(45) NOT NULL
+  nome VARCHAR(80) NOT NULL,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE partida (
