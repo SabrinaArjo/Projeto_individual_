@@ -13,7 +13,7 @@
 <body onload="carregarDashboard()">
 
     <header>
-    Dashboard Demon Slayer – Estatísticas do Jogo da Memória!
+        Dashboard Demon Slayer – Estatísticas do Jogo da Memória!
     </header>
 
     <div class="container">
@@ -33,6 +33,10 @@
             <canvas id="graficoComparativo"></canvas>
         </div>
 
+        <div>
+            <button class="btn-voltar" onclick="voltarAreaUsuario()">Voltar para a Área do Usuário</button>
+        </div>
+
     </div>
 
 </body>
@@ -41,34 +45,36 @@
 
 <script>
 
+    var idUsuario = sessionStorage.ID_USUARIO;
+
     function carregarDashboard() {
         obterPartidas();
         obterResumo();
     }
 
     function obterPartidas() {
-        fetch(`/partidas/listar/${sessionStorage.ID_USUARIO}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({id_usuario:sessionStorage.ID_USUARIO})
+        fetch(`/partidas/listar/${idUsuario}`)
+            .then(res => {
+                if (!res.ok) throw "Erro 404 ao buscar partidas";
+                return res.json();
             })
-            .then(res => res.json())
             .then(dados => {
                 montarGraficoJogadas(dados);
                 montarGraficoTempo(dados);
             })
             .catch(err => console.log("Erro ao buscar partidas:", err));
     }
-    
+
     function obterResumo() {
-        fetch(`/partidas/dashboard/ ${sessionStorage.ID_USUARIO}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+        fetch(`/partidas/dashboard/${idUsuario}`)
+            .then(res => {
+                if (!res.ok) throw "Erro 404 no dashboard";
+                return res.json();
             })
-            .then(res => res.json())
             .then(dados => {
                 montarGraficoComparativo(dados[0]);
-            });
+            })
+            .catch(err => console.log("Erro ao buscar resumo:", err));
     }
 
     function montarGraficoJogadas(partidas) {
@@ -121,11 +127,62 @@
         });
     }
 
+    function montarGraficoJogadas(partidas) {
+        const ctx = document.getElementById('graficoJogadas');
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: partidas.map(p => "Partida " + p.idPartida),
+                datasets: [{
+                    label: "Jogadas",
+                    data: partidas.map(p => p.jogadas),
+                    backgroundColor: "#29ffaf88",
+                    borderColor: "#29ffaf",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { legend: { labels: { color: "#fff" } } },
+                scales: {
+                    x: { ticks: { color: "#fff" } },
+                    y: { ticks: { color: "#fff" } }
+                }
+            }
+        });
+    }
+
+    function montarGraficoTempo(partidas) {
+        const ctx = document.getElementById('graficoTempo');
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: partidas.map(p => "Partida " + p.idPartida),
+                datasets: [{
+                    label: "Segundos",
+                    data: partidas.map(p => p.tempo),
+                    borderColor: "#ff5050",
+                    backgroundColor: "#ff505055",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { legend: { labels: { color: "#fff" } } },
+                scales: {
+                    x: { ticks: { color: "#fff" } },
+                    y: { ticks: { color: "#fff" } }
+                }
+            }
+        });
+    }
+
+
     function montarGraficoComparativo(r) {
         const ctx = document.getElementById('graficoComparativo');
 
         const dados = {
-            labels: ["Acertos", "Jogadas", "Melhor Tempo (quanto menor melhor)"],
+            labels: ["Acertos", "Jogadas", "Melhor Tempo"],
             datasets: [
                 {
                     label: "Você",
@@ -134,7 +191,7 @@
                 },
                 {
                     label: "Média dos Jogadores",
-                    data: [8, 22, 30],
+                    data: [12, 24, 35],
                     backgroundColor: "#ff5050"
                 }
             ]
@@ -155,4 +212,9 @@
             }
         });
     }
+
+    function voltarAreaUsuario() {
+        window.location.href = "area-usuario.html";
+    }
+
 </script>
