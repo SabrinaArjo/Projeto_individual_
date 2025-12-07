@@ -127,57 +127,6 @@
         });
     }
 
-    function montarGraficoJogadas(partidas) {
-        const ctx = document.getElementById('graficoJogadas');
-
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: partidas.map(p => "Partida " + p.idPartida),
-                datasets: [{
-                    label: "Jogadas",
-                    data: partidas.map(p => p.jogadas),
-                    backgroundColor: "#29ffaf88",
-                    borderColor: "#29ffaf",
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                plugins: { legend: { labels: { color: "#fff" } } },
-                scales: {
-                    x: { ticks: { color: "#fff" } },
-                    y: { ticks: { color: "#fff" } }
-                }
-            }
-        });
-    }
-
-    function montarGraficoTempo(partidas) {
-        const ctx = document.getElementById('graficoTempo');
-
-        new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: partidas.map(p => "Partida " + p.idPartida),
-                datasets: [{
-                    label: "Segundos",
-                    data: partidas.map(p => p.tempo),
-                    borderColor: "#ff5050",
-                    backgroundColor: "#ff505055",
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                plugins: { legend: { labels: { color: "#fff" } } },
-                scales: {
-                    x: { ticks: { color: "#fff" } },
-                    y: { ticks: { color: "#fff" } }
-                }
-            }
-        });
-    }
-
-
     function montarGraficoComparativo(r) {
         const ctx = document.getElementById('graficoComparativo');
 

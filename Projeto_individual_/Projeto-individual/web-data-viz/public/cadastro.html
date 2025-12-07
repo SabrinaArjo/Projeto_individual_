@@ -72,7 +72,7 @@
                         setTimeout(() => window.location.href = "login.html", 1200);
                     } else {
                         const text = await res.text().catch(() => null);
-                        msg.innerHTML = text || "Erro ao cadastrar. Email já existe?";
+                        msg.innerHTML = text || "Erro ao cadastrar. Email já existe!";
                         msg.style.color = "red";
                     }
                 })
